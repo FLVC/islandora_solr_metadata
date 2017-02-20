@@ -254,7 +254,7 @@ function islandora_solr_metadata_config_form($form, &$form_state, $configuration
  */
 function islandora_solr_metadata_config_form_validate($form, $form_state) {
   if ($form_state['triggering_element']['#name'] == 'islandora-solr-metadata-add-field') {
-    module_load_include('inc', 'islandora_solr_search', 'includes/luke');
+    module_load_include('inc', 'islandora_solr', 'includes/luke');
     $solr_luke = islandora_solr_get_luke();
     $luke_fields = array_keys($solr_luke['fields']);
 
@@ -299,7 +299,7 @@ function islandora_solr_metadata_config_form_validate($form, $form_state) {
   if ($form_state['triggering_element']['#value'] == 'Save configuration') {
     $solr_field = $form_state['values']['islandora_solr_metadata_fields']['description_fieldset']['available_solr_fields'];
     if (!empty($solr_field)) {
-      module_load_include('inc', 'islandora_solr_search', 'includes/luke');
+      module_load_include('inc', 'islandora_solr', 'includes/luke');
       $solr_luke = islandora_solr_get_luke();
       $luke_fields = array_keys($solr_luke['fields']);
       if (!in_array($solr_field, $luke_fields)) {
@@ -511,6 +511,13 @@ function islandora_solr_metadata_config_field_form($form, &$form_state, $config_
     '#title' => t('Hyperlink?'),
     '#description' => t('Should each value for this field be linked to a search to find objects with the value in this field?'),
     '#default_value' => $get_default('hyperlink', FALSE),
+  );
+  $set['uri_replacement'] = array(
+    '#type' => 'textfield',
+    '#title' => t('URI/PID Replacement Field'),
+    '#description' => t('If the value of this field represents a Fedora URI or PID, a Solr field can be specified to replace that value, e.g., with the object label instead of the full URI.'),
+    '#default_value' => $get_default('uri_replacement', ''),
+    '#autocomplete_path' => 'islandora_solr/autocomplete_luke',
   );
   // Add in truncation fields for metadata field.
   $truncation_config = array(
